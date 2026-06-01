@@ -33,7 +33,7 @@ public class CreateUserTest extends BaseAPITest{
     public void testCreateUniqueUserSuccess() {
         user = new UserModel(email, password, name);
 
-        Response response = createUser(user)
+        createUser(user)
                 .then()
                 .log().all()
                 .statusCode(HTTP_OK)
@@ -42,8 +42,6 @@ public class CreateUserTest extends BaseAPITest{
                 .body("user.name", equalTo(name))
                 .extract().response();
 
-        accessToken = response.path("accessToken");
-        System.out.println(accessToken);
     }
 
     @Test
@@ -52,10 +50,7 @@ public class CreateUserTest extends BaseAPITest{
     public void testCreateDuplicateUserFail() {
         this.user = new UserModel(email, password, name);
 
-        Response response = createUser(this.user);
-
-        accessToken = response.path("accessToken");
-        System.out.println(accessToken);
+        createUser(this.user);
 
         createUser(this.user)
                 .then()
@@ -128,6 +123,8 @@ public class CreateUserTest extends BaseAPITest{
 
     @After
     public void tearDown() {
+        String accessToken = getUserAccessToken(email, password);
+        System.out.println(accessToken);
         if (accessToken != null) {
             deleteUser(accessToken);
         }
